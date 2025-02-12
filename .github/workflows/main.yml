@@ -1,4 +1,4 @@
-name: CI Pipeline
+name: Pipeline
 
 on:
   push:
@@ -22,8 +22,8 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      - name: Grant execute 
-        run: chmod +x 
+      - name: Grant execute permission to chromedriver
+        run: chmod +x src/test/resources/drivers/chromedriver
 
       - name: Run API Tests
         run: ./gradlew runApiTests
