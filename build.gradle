@@ -40,8 +40,8 @@ dependencies {
 }
 
 //task runApiTests(type: Test) {
-   // systemProperty "cucumber.filter.tags", "@api"
-   // systemProperty "cucumber.plugin", "html:build/reports/api/cucumber-reports.html,json:build/reports/api/cucumber.json"
+// systemProperty "cucumber.filter.tags", "@api"
+// systemProperty "cucumber.plugin", "html:build/reports/api/cucumber-reports.html,json:build/reports/api/cucumber.json"
 //}
 
 tasks.named('test') {
@@ -77,5 +77,5 @@ tasks.register('testWeb', Test) {
 }
 
 //test {
-   // useJUnit()
+// useJUnit()
 //}
