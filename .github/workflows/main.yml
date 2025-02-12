@@ -24,30 +24,36 @@ jobs:
 
       - name: Build with Gradle
         run: ./gradlew build --no-daemon
-      
-      - name: Run API Tests
-        run: ./gradlew testApi
 
-      - name: Run Web Tests
-        run: ./gradlew testWeb
+      - name: Run All Tests
+        run: ./gradlew test --no-daemon --refresh-dependencies
 
-      - name: Debug - List Reports Files
-        run: ls -R build/reports/tests
+      - name: Debug - List Reports Directory
+        run: ls -R build/reports || true
+
+      - name: Debug - List Test Results Directory
+        run: ls -R build/test-results || true
 
       - name: Upload Test Report
         uses: actions/upload-artifact@v4
         with:
           name: test-report
-          path: build/reports/tests/test/
+          path: build/reports/tests/test/**
 
       - name: Upload API Test Report
         uses: actions/upload-artifact@v4
         with:
           name: api-test-report
-          path: build/reports/tests/testApi/
+          path: build/reports/tests/testApi/**
 
       - name: Upload Web Test Report
         uses: actions/upload-artifact@v4
         with:
           name: web-test-report
-          path: build/reports/tests/testWeb/
+          path: build/reports/tests/testWeb/**
+
+      - name: Upload Raw Test Results (Debug)
+        uses: actions/upload-artifact@v4
+        with:
+          name: raw-test-results
+          path: build/test-results/**
