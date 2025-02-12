@@ -34,6 +34,4 @@ jobs:
           name: test-reports
           path: |
             build/reports/tests/
-            build/reports/api/
-            build/reports/web/
             
