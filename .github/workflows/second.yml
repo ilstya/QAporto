@@ -1,0 +1,49 @@
+name: Cucumber Report Tests
+
+on:
+  workflow_dispatch:
+  pull_request:
+
+jobs:
+  run-tests:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK
+        uses: actions/setup-java@v3
+        with:
+          java-version: '11'
+          distribution: 'adopt'
+
+      - name: Install Chrome Stable
+        uses: browser-actions/setup-chrome@v1
+        with:
+          chrome-version: 'stable'
+
+      - name: Grant execute permission for Gradlew
+        run: chmod +x gradlew
+
+      - name: Cache Gradle dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.gradle/caches
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+      - name: Run Gradle build
+        run: ./gradlew build
+
+      - name: Run API tests
+        run: ./gradlew runApiTests
+
+      - name: Run Web tests
+        run: ./gradlew runWebTests
+
+      - name: Upload Tests Reports
+        uses: actions/upload-artifact@v4
+        with:
+          name: tests-reports
+          path: build/reports/tests/
