@@ -10,17 +10,6 @@ repositories {
     mavenCentral()
 }
 
-sourceSets {
-    test {
-        java {
-            srcDirs = ['src/test/java']
-        }
-        resources {
-            srcDirs = ['src/test/resources']
-        }
-    }
-}
-
 dependencies {
     // Cucumber dependencies
     testImplementation 'io.cucumber:cucumber-java:7.0.0'
@@ -33,7 +22,7 @@ dependencies {
     testImplementation 'junit:junit:4.13.2'
 
 
-    // Dependency untuk Web Testing
+    // Dependency Web Testing
     testImplementation 'org.seleniumhq.selenium:selenium-java:4.16.1'
     testImplementation 'io.github.bonigarcia:webdrivermanager:5.0.3'
     testImplementation 'org.assertj:assertj-core:3.24.2'
@@ -45,7 +34,7 @@ dependencies {
 //}
 
 tasks.named('test') {
-    useJUnitPlatform()
+    useJUnit()
 }
 
 test {
@@ -76,6 +65,6 @@ tasks.register('testWeb', Test) {
     classpath = sourceSets.test.runtimeClasspath
 }
 
-//test {
-// useJUnit()
-//}
+test {
+ useJUnit()
+}
