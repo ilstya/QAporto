@@ -29,10 +29,10 @@ jobs:
         run: ./gradlew build
 
       - name: Run API tests
-        run: ./gradlew runApiTests
+        run: ./gradlew testApi
 
       - name: Run Web tests
-        run: ./gradlew runWebTests
+        run: ./gradlew testWeb
 
       - name: Upload Tests Reports
         uses: actions/upload-artifact@v4
