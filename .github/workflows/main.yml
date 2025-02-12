@@ -1,4 +1,4 @@
-name: Pipeline
+name: Pipeline new
 
 on:
   workflow_dispatch:
