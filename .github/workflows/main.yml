@@ -33,5 +33,5 @@ jobs:
         with:
           name: test-reports
           path: |
-            build/reports/tests/
+            build/reports/tests
             
