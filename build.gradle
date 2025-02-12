@@ -21,6 +21,9 @@ dependencies {
     // JUnit dependency
     testImplementation 'junit:junit:4.13.2'
 
+    //jupiter dependency
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
 
     // Dependency Web Testing
     testImplementation 'org.seleniumhq.selenium:selenium-java:4.16.1'
