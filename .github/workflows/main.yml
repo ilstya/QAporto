@@ -25,6 +25,9 @@ jobs:
       - name: Build with Gradle
         run: ./gradlew build --no-daemon
 
+      - name: List Build Reports
+        run: ls -R build/reports
+      
       - name: Run API Tests
         run: ./gradlew testApi
 
