@@ -1,5 +1,6 @@
 plugins {
     id 'java'
+    id 'io.qameta.allure' version '2.11.2'
 }
 
 group = 'org.setya'
@@ -9,11 +10,72 @@ repositories {
     mavenCentral()
 }
 
+sourceSets {
+    test {
+        java {
+            srcDirs = ['src/test/java']
+        }
+        resources {
+            srcDirs = ['src/test/resources']
+        }
+    }
+}
+
 dependencies {
-    testImplementation platform('org.junit:junit-bom:5.10.0')
-    testImplementation 'org.junit.jupiter:junit-jupiter'
+    // Cucumber dependencies
+    testImplementation 'io.cucumber:cucumber-java:7.0.0'
+    testImplementation 'io.cucumber:cucumber-junit:7.0.0'
+
+    // RestAssured dependency
+    testImplementation 'io.rest-assured:rest-assured:5.3.0'
+
+    // JUnit dependency
+    testImplementation 'junit:junit:4.13.2'
+
+
+    // Dependency untuk Web Testing
+    testImplementation 'org.seleniumhq.selenium:selenium-java:4.16.1'
+    testImplementation 'io.github.bonigarcia:webdrivermanager:5.0.3'
+    testImplementation 'org.assertj:assertj-core:3.24.2'
+}
+
+//task runApiTests(type: Test) {
+   // systemProperty "cucumber.filter.tags", "@api"
+   // systemProperty "cucumber.plugin", "html:build/reports/api/cucumber-reports.html,json:build/reports/api/cucumber.json"
+//}
+
+tasks.named('test') {
+    useJUnitPlatform()
 }
 
 test {
+    outputs.upToDateWhen { false }
     useJUnitPlatform()
+    systemProperty "cucumber.plugin", "json:build/reports/cucumber.json,html:build/reports/cucumber-html-reports"
 }
+
+testing {
+    suites {
+        test {
+            useJUnitJupiter() // Untuk menggunakan JUnit 5 (Jupiter)
+        }
+    }
+}
+
+tasks.register('testApi', Test) {
+    useJUnitPlatform()
+    systemProperty 'cucumber.filter.tags', '@api'
+    testClassesDirs = sourceSets.test.output.classesDirs
+    classpath = sourceSets.test.runtimeClasspath
+}
+
+tasks.register('testWeb', Test) {
+    useJUnitPlatform()
+    systemProperty 'cucumber.filter.tags', '@web'
+    testClassesDirs = sourceSets.test.output.classesDirs
+    classpath = sourceSets.test.runtimeClasspath
+}
+
+//test {
+   // useJUnit()
+//}

@@ -26,12 +26,17 @@ jobs:
         run: chmod +x gradlew
 
       - name: Run Gradle build
-        run: ./gradlew clean build
+        run: ./gradlew build
 
-      - name: Upload Test Reports
-        uses: actions/upload-artifact@v4
+      - name: Run API tests
+        run: ./gradlew runApiTests
+
+      - name: Run Web tests
+        run: ./gradlew runWebTests
+
+      - name: Upload Tests Reports
+        uses: actions/upload-artifact@v3
         with:
-          name: test-reports
-          path: |
-            build/reports/cucumber/
+            name: tests-reports
+            path: build/reports/tests/
             
