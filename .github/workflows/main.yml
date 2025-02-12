@@ -26,7 +26,7 @@ jobs:
         run: ./gradlew build --no-daemon
 
       - name: Run All Tests
-        run: ./gradlew test --no-daemon --refresh-dependencies
+        run: ./gradlew test
 
       - name: Debug - List Reports Directory
         run: ls -R build/reports || true
