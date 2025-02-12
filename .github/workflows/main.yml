@@ -1,17 +1,13 @@
-name: Pipeline
+name: Report Tests
 
 on:
-  push:
-    branches:
-      - main
+  workflow_dispatch:
   pull_request:
-    branches:
-      - main
 
 jobs:
-  test:
+  run-tests:
     runs-on: ubuntu-latest
-
+    
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -19,16 +15,31 @@ jobs:
       - name: Set up JDK
         uses: actions/setup-java@v3
         with:
-          java-version: '17' 
-          distribution: 'temurin'
+          java-version: '11'
+          distribution: 'adopt'
 
-      - name: Grant execute permission 
-        run: chmod +x 
+      - name: Install Chrome Stable
+        uses: browser-actions/setup-chrome@v1
+        with:
+          chrome-version: 'stable'
 
-      - name: Run API Tests
+      - name: Grant execute permission for Gradlew
+        run: chmod +x gradlew
+
+      - name: Cache Gradle dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.gradle/caches
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+      - name: Run Gradle build
+        run: ./gradlew build
+
+      - name: Run API tests
         run: ./gradlew runApiTests
 
-      - name: Run Web Tests
+      - name: Run Web tests
         run: ./gradlew runWebTests
 
       - name: Upload Test Reports
