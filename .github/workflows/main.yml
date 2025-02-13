@@ -1,4 +1,4 @@
-name: Pipeline new
+name: Pipeline update
 
 on:
   workflow_dispatch:
@@ -37,8 +37,8 @@ jobs:
           name: test-report
           path: build/reports/tests/test/
 
-      - name: Upload cucumber api Test Results
+      - name: Upload cucumber Test Results
         uses: actions/upload-artifact@v4
         with:
           name: test-results
-          path: build/reports/cucumber/
+          path: cucumber-reports/
