@@ -1,4 +1,4 @@
-name: Pipeline update
+name: Pipeline Update
 
 on:
   workflow_dispatch:
@@ -19,26 +19,26 @@ jobs:
           java-version: '17'
           cache: 'gradle'
 
-      - name: Grant execute permission to Gradle
+      - name: Grant execute permissions for Gradle
         run: chmod +x gradlew
 
       - name: Build with Gradle
-        run: ./gradlew build --no-daemon
+        run: ./gradlew clean build --no-daemon
 
-      - name: Run All Tests
-        run: ./gradlew clean test --no-daemon --info
+      - name: Run Tests
+        run: ./gradlew test --no-daemon
 
-      - name: Debug - Cek Folder Build
-        run: ls -R build || true
+      - name: Check Test Report Directory
+        run: ls -R build/cucumber-reports || echo "Cucumber reports not found"
 
-      - name: Upload Test Report
+      - name: Upload JUnit Test Report
         uses: actions/upload-artifact@v4
         with:
-          name: test-report
+          name: junit-test-report
           path: build/reports/tests/test/
 
-      - name: Upload cucumber Test Results
+      - name: Upload Cucumber Test Results
         uses: actions/upload-artifact@v4
         with:
-          name: test-results
-          path: cucumber-reports/
+          name: cucumber-test-results
+          path: build/cucumber-reports/

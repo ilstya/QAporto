@@ -12,49 +12,52 @@ repositories {
 
 dependencies {
     // Cucumber dependencies
-    testImplementation 'io.cucumber:cucumber-java:7.0.0'
-    testImplementation 'io.cucumber:cucumber-junit:7.0.0'
+    testImplementation 'io.cucumber:cucumber-java:7.14.0'
+    testImplementation 'io.cucumber:cucumber-junit-platform-engine:7.14.0' // Untuk JUnit 5
+    testImplementation 'io.cucumber:cucumber-junit-platform-engine:7.0.0'
 
     // RestAssured dependency
     testImplementation 'io.rest-assured:rest-assured:5.3.0'
 
-    // JUnit dependency
-    testImplementation 'junit:junit:4.13.2'
+    // JUnit 5 dependencies
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.10.0'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.10.0'
 
-    //jupiter dependency
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
+    // Untuk menggantikan Assert dari JUnit 4
+    testImplementation 'org.assertj:assertj-core:3.24.2'
 
     // Dependency Web Testing
     testImplementation 'org.seleniumhq.selenium:selenium-java:4.16.1'
     testImplementation 'io.github.bonigarcia:webdrivermanager:5.0.3'
-    testImplementation 'org.assertj:assertj-core:3.24.2'
-}
 
-tasks.register("runApiTests", Test) {
-    group = "verification"
-    description = "Runs API tests tagged with @api"
-    useJUnitPlatform {
-        includeTags("api")
-    }
-    outputs.upToDateWhen { false }
-}
-
-tasks.register("runWebTests", Test) {
-    group = "verification"
-    description = "Runs Web tests tagged with @web"
-    useJUnitPlatform {
-        includeTags("web")
-    }
-    outputs.upToDateWhen { false }
-}
-
-test {
-    systemProperty "cucumber.plugin", "json:cucumber-reports/report.json,html:cucumber-reports/report.html"
 }
 
 tasks.test {
-    doFirst {
-        file("cucumber-reports").mkdirs()
+    useJUnitPlatform()
+    systemProperty "cucumber.plugin", "json:build/cucumber-reports/report.json,html:build/cucumber-reports/report.html"
+    outputs.upToDateWhen { false }
+}
+
+tasks.register('runApiTests', Test) {
+    useJUnitPlatform {
+        includeTags 'api'
+    }
+}
+
+tasks.register('runWebTests', Test) {
+    useJUnitPlatform {
+        includeTags 'web'
+    }
+}
+
+tasks.test {
+    finalizedBy 'allureReport'
+}
+
+allure {
+    version = '2.20.1'
+    autoconfigure = true
+    useJUnit5 {
+        version = '2.20.1'
     }
 }
