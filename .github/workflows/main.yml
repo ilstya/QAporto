@@ -35,10 +35,6 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: junit-test-report
-          path: build/reports/tests/test/
+          path: build/reports/
 
-      - name: Upload Cucumber Test Results
-        uses: actions/upload-artifact@v4
-        with:
-          name: cucumber-test-results
-          path: build/cucumber-reports/
+
