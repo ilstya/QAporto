@@ -1,4 +1,4 @@
-name: Pipeline new Update 
+name: Cucumber Report Tests
 
 on:
   workflow_dispatch:
@@ -9,30 +9,41 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-      - name: Set up JDK 17
+      - name: Set up JDK
         uses: actions/setup-java@v3
         with:
-          distribution: 'temurin'
           java-version: '17'
-          cache: 'gradle'
+          distribution: 'temurin'
 
-      - name: Grant execute permissions for Gradle
+      - name: Install Chrome Stable
+        uses: browser-actions/setup-chrome@v1
+        with:
+          chrome-version: 'stable'
+
+      - name: Grant execute permission for Gradlew
         run: chmod +x gradlew
 
-      - name: Run Tests
-        run: ./gradlew test --info
-
-      - name: Upload Test Results
-        uses: actions/upload-artifact@v4
+      - name: Cache Gradle dependencies
+        uses: actions/cache@v3
         with:
-            name: test-results
-            path: build/test-results/test/
+          path: ~/.gradle/caches
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+      - name: Run Gradle build
+        run: ./gradlew build
 
-      - name: Upload JUnit Report
-        uses: actions/upload-artifact@v4
+      - name: Run API tests
+        run: ./gradlew runApiTests
+
+      - name: Run Web tests
+        run: ./gradlew runWebTests
+
+      - name: Upload Tests Reports
+        uses: actions/upload-artifact@v3
         with:
-            name: junit-test-report
-            path: build/reports/
+          name: tests-reports
+          path: build/reports/

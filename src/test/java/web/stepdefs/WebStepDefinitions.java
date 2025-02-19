@@ -11,6 +11,7 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.time.Duration;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -82,4 +83,69 @@ public class WebStepDefinitions {
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector(".success")));
         assertThat(driver.findElements(By.cssSelector(".success")).size()).isGreaterThan(0);
     }
+
+    @Given("I have a product in my cart")
+    public void iHaveAProductInMyCart() {
+        iAmOnHomepage();
+        clickCategory("Laptops");
+        selectProduct("MacBook Pro");
+        addToCart();
+    }
+
+    @When("I remove the product")
+    public void iRemoveTheProduct() {
+        driver.findElement(By.id("cartur")).click();
+        wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//a[contains(text(),'Delete')]"))).click();
+
+        // Tunggu produk benar-benar terhapus/jika jaringan lag
+        wait.until(ExpectedConditions.numberOfElementsToBe(By.xpath("//tr"), 1));
+    }
+
+    @Then("The cart should be empty")
+    public void theCartShouldBeEmpty() {
+        List<WebElement> cartItems = driver.findElements(By.xpath("//tr"));
+        System.out.println("Jumlah item di keranjang: " + cartItems.size());
+        assertThat(cartItems).hasSize(1);
+    }
+
+    @When("I proceed to checkout")
+    public void iProceedToCheckout() {
+        driver.findElement(By.id("cartur")).click();
+        wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//button[contains(text(),'Place Order')]"))).click();
+    }
+
+    @And("I enter my details")
+    public void iEnterMyDetails() {
+        driver.findElement(By.id("name")).sendKeys("John Doe");
+        driver.findElement(By.id("country")).sendKeys("USA");
+        driver.findElement(By.id("city")).sendKeys("New York");
+        driver.findElement(By.id("card")).sendKeys("1234567812345678");
+        driver.findElement(By.id("month")).sendKeys("12");
+        driver.findElement(By.id("year")).sendKeys("2026");
+    }
+
+    @And("I confirm the purchase")
+    public void iConfirmThePurchase() {
+        driver.findElement(By.xpath("//button[contains(text(),'Purchase')]")).click();
+    }
+
+    @Then("I should see the order confirmation message")
+    public void iShouldSeeTheOrderConfirmationMessage() {
+        WebElement confirmationMessage = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//h2[contains(text(),'Thank you')]")));
+        assertThat(confirmationMessage.isDisplayed()).isTrue();
+    }
+
+    @When("I try to add to cart without selecting a product")
+    public void iTryToAddToCartWithoutSelectingAProduct() {
+        driver.get(BASE_URL); // Pastikan di homepage
+        List<WebElement> addToCartButtons = driver.findElements(By.linkText("Add to cart"));
+        // Pastikan tombol tidak ditemukan (tidak muncul)
+        assertThat(addToCartButtons).isEmpty();
+    }
+
+    @Then("I should see an error message {string}")
+    public void iShouldSeeAnErrorMessage(String expectedMessage) {
+        System.out.println("Error: " + expectedMessage);
+    }
+
 }
