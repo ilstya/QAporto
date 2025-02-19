@@ -28,7 +28,7 @@ public class WebStepDefinitions {
         options.addArguments("--remote-allow-origins=*");
         options.addArguments("--no-sandbox");
         options.addArguments("--disable-dev-shm-usage");
-        // Uncomment the line below if you want to run tests in headless mode
+        // headless mode
         options.addArguments("--headless");
 
         driver = new ChromeDriver(options);
@@ -97,7 +97,7 @@ public class WebStepDefinitions {
         driver.findElement(By.id("cartur")).click();
         wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//a[contains(text(),'Delete')]"))).click();
 
-        // Tunggu produk benar-benar terhapus/jika jaringan lag
+        // Tunggu produk benar-benar terhapus/jika jaringan lag atau load lama untuk terhapus
         wait.until(ExpectedConditions.numberOfElementsToBe(By.xpath("//tr"), 1));
     }
 
@@ -116,12 +116,12 @@ public class WebStepDefinitions {
 
     @And("I enter my details")
     public void iEnterMyDetails() {
-        driver.findElement(By.id("name")).sendKeys("John Doe");
-        driver.findElement(By.id("country")).sendKeys("USA");
-        driver.findElement(By.id("city")).sendKeys("New York");
+        driver.findElement(By.id("name")).sendKeys("ilham S");
+        driver.findElement(By.id("country")).sendKeys("Indonesia");
+        driver.findElement(By.id("city")).sendKeys("Yogyakarta");
         driver.findElement(By.id("card")).sendKeys("1234567812345678");
         driver.findElement(By.id("month")).sendKeys("12");
-        driver.findElement(By.id("year")).sendKeys("2026");
+        driver.findElement(By.id("year")).sendKeys("2025");
     }
 
     @And("I confirm the purchase")
