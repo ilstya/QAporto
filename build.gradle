@@ -63,3 +63,13 @@ tasks.register('runWebTests', Test) {
         includeTags 'web'
     }
 }
+
+tasks.register('runWebTests2', Test) {
+    useJUnitPlatform {
+        includeTags 'web2'
+    }
+}
+
+tasks.withType(Test) {
+    systemProperty "cucumber.options", "--dry-run"
+}

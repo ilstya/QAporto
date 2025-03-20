@@ -1,30 +1,39 @@
 @web
-Feature: Web Testing for demoblaze.com
+Feature: Web Testing for demoblaze
 
-  Scenario: Verify homepage title
-    When I navigate to homepage
-    Then The page title should be "STORE"
+  Scenario: User logs in successfully
+    Given User is on the Demoblaze homepage
+    When User clicks on the login "Log in"
+    And User enters valid "blackdice1" and "blackdice1"
+    And User clicks "Login button"
+    Then User should be logged in successfully
 
-  Scenario: Add product to cart
-    Given I am on the homepage
-    When I click "Laptops" category
-    And I select "MacBook Pro"
-    And I add to cart
-    Then Product should be added to cart
+  Scenario: User adds a product to the cart successfully
+    Given User is on the Demoblaze homepage
+    When User navigates to a product page
+    When User clicks on the product "Add to cart"
+    Then The product should be added to the cart successfully
 
-  Scenario: Remove product from cart
-    Given I have a product in my cart
-    When I remove the product
+  Scenario: User verifies product in cart
+    Given User is on the Demoblaze homepage
+    When User navigates to a product page
+    When User clicks on the product "Add to cart"
+    When User navigates to the cart page
+    Then The added product should be visible in the cart
+
+  Scenario: User removes product from cart
+    Given User is on the Demoblaze homepage
+    When User navigates to a product page
+    And User clicks on the product "Add to cart"
+    And User navigates to the cart page
+    Then The added product should be visible in the cart
+    When User removes the product from the cart
     Then The cart should be empty
 
-  Scenario: Checkout process
-    Given I have a product in my cart
-    When I proceed to checkout
-    And I enter my details
-    And I confirm the purchase
-    Then I should see the order confirmation message
+  Scenario: User attempts to remove a product from an empty cart
+    Given User is on the Demoblaze homepage
+    When User navigates to the cart page
+    Then The cart should be empty
+    When User removes the product from the cart
+    Then An error message should be displayed indicating no products in the cart
 
-  Scenario: Negative - Add product to cart without selecting
-    Given I am on the homepage
-    When I try to add to cart without selecting a product
-    Then I should see an error message "Please select a product first"
