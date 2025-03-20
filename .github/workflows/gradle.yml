@@ -12,50 +12,55 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Set up JDK
+      - name: Set up JDK 17
         uses: actions/setup-java@v3
         with:
           java-version: '17'
           distribution: 'temurin'
+          cache: gradle
 
       - name: Install Chrome and Chromedriver
-        uses: browser-actions/setup-chrome@v1
-        with:
-          chrome-version: 'stable'
-
-      - name: Install Chromedriver
-        uses: nanasess/setup-chromedriver@v2
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y google-chrome-stable
+          CHROME_VERSION=$(google-chrome --version | awk '{print $3}')
+          echo "Chrome version: $CHROME_VERSION"
+          sudo apt-get install -y chromedriver
 
       - name: Verify Chrome and Chromedriver Installation
         run: |
           google-chrome --version
           chromedriver --version
 
-      - name: Grant execute permission for Gradlew
+      - name: Grant execute permission for Gradle Wrapper
         run: chmod +x gradlew
 
       - name: Cache Gradle dependencies
         uses: actions/cache@v3
         with:
           path: ~/.gradle/caches
-          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          key: gradle-${{ runner.os }}-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
           restore-keys: |
-            ${{ runner.os }}-gradle-
+            gradle-${{ runner.os }}-
 
-      - name: Start Chrome in Background
-        run: google-chrome --headless --no-sandbox --disable-dev-shm-usage --remote-debugging-port=9222 &
+      - name: Run Gradle Build
+        run: ./gradlew clean build
 
-      - name: Run Gradle build
-        run: ./gradlew build
-
-      - name: Run API tests
+      - name: Run API Tests
         run: ./gradlew runApiTests
+        continue-on-error: false
 
-      - name: Run Web tests
-        run: ./gradlew runWebTests -Dwebdriver.chrome.driver=/usr/bin/chromedriver
+      - name: Run Web Tests 1
+        run: ./gradlew runWebTests
+        continue-on-error: false
 
-      - name: Upload Tests Reports
+      - name: Run Web Tests 2
+        run: ./gradlew runWebTests2
+        continue-on-error: false
+
+      - name: Upload Test Reports
+        if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: tests-reports
+          name: test-reports
           path: build/reports/
