@@ -2,7 +2,6 @@ package DemoblazeWeb.Utility;
 
 import io.cucumber.java.After;
 import io.cucumber.java.Before;
-import io.github.bonigarcia.wdm.WebDriverManager;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
@@ -16,13 +15,15 @@ public class Hooks {
     public void setup() {
         if (driver == null) {
             ChromeOptions options = new ChromeOptions();
-            options.addArguments("--user-data-dir=/tmp/chrome-profile");
-            options.addArguments("--disable-dev-shm-usage");
-            options.addArguments("--remote-allow-origins=*");
-            options.addArguments("--headless=new");
-            options.addArguments("--no-sandbox");
+            options.addArguments("--headless"); // Jalankan tanpa UI
+            options.addArguments("--no-sandbox"); // Hindari permission issue di Linux
+            options.addArguments("--disable-dev-shm-usage"); // Gunakan /tmp untuk shared memory
+            options.addArguments("--disable-gpu"); // Matikan akselerasi GPU
+            options.addArguments("--remote-allow-origins=*"); // Pastikan akses remote
 
             driver = new ChromeDriver(options);
+            driver.manage().window().maximize();
+            driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
         }
     }
 

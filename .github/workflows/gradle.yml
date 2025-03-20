@@ -29,6 +29,9 @@ jobs:
       - name: Kill any running Chrome instances
         run: pkill -f chrome || true
 
+      - name: Set ChromeDriver Path
+        run: echo "WEBDRIVER_CHROME_DRIVER=$(pwd)/src/test/resources/drivers/chromedriver.exe" >> $GITHUB_ENV
+
       - name: Grant execute permission for Gradlew
         run: chmod +x gradlew
 
