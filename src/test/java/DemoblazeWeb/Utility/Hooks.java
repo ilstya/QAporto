@@ -20,6 +20,8 @@ public class Hooks {
             options.addArguments("--disable-dev-shm-usage"); // Gunakan /tmp untuk shared memory
             options.addArguments("--disable-gpu"); // Matikan akselerasi GPU
             options.addArguments("--remote-allow-origins=*"); // Pastikan akses remote
+            options.addArguments("--user-data-dir=/tmp/chrome-user-data"); // Direktori unik untuk Chrome
+            options.addArguments("--remote-debugging-port=9222"); // Debugging
 
             driver = new ChromeDriver(options);
             driver.manage().window().maximize();
