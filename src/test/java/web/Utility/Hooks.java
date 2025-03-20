@@ -2,6 +2,7 @@ package web.Utility;
 
 import io.cucumber.java.After;
 import io.cucumber.java.Before;
+import io.github.bonigarcia.wdm.WebDriverManager;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 
@@ -13,7 +14,7 @@ public class Hooks {
     @Before
     public void setup() {
         if (driver == null) {
-            System.setProperty("webdriver.chrome.driver", "C:\\Learning\\chromedriver-win64\\chromedriver.exe");
+            WebDriverManager.chromedriver().setup();
             driver = new ChromeDriver();
             driver.manage().window().maximize();
             driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
