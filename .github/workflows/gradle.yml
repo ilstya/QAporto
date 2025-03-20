@@ -34,9 +34,6 @@ jobs:
       - name: Grant execute permission for Gradlew
         run: chmod +x gradlew
 
-      - name: Start Chrome in Background
-        run: google-chrome --headless --no-sandbox --disable-dev-shm-usage --remote-debugging-port=9222 &
-
       - name: Cache Gradle dependencies
         uses: actions/cache@v3
         with:
@@ -45,17 +42,17 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gradle-
 
+      - name: Start Chrome in Background
+        run: google-chrome --headless --no-sandbox --disable-dev-shm-usage --remote-debugging-port=9222 &
+
       - name: Run Gradle build
-        run: ./gradlew build -Dwebdriver.chrome.driver=/usr/bin/chromedriver
+        run: ./gradlew build
 
       - name: Run API tests
-        run: ./gradlew runApiTests -Dwebdriver.chrome.driver=/usr/bin/chromedriver
+        run: ./gradlew runApiTests
 
-      - name: Run Web tests 1
+      - name: Run Web tests
         run: ./gradlew runWebTests -Dwebdriver.chrome.driver=/usr/bin/chromedriver
-
-      - name: Run Web tests 2
-        run: ./gradlew runWebTests2 -Dwebdriver.chrome.driver=/usr/bin/chromedriver
 
       - name: Upload Tests Reports
         uses: actions/upload-artifact@v4
