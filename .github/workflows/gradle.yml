@@ -19,6 +19,11 @@ jobs:
           distribution: 'temurin'
 
       - name: Install Chrome and Chromedriver
+        uses: browser-actions/setup-chrome@v1
+        with:
+          chrome-version: 'stable'
+
+      - name: Install Chromedriver
         uses: nanasess/setup-chromedriver@v2
 
       - name: Verify Chrome and Chromedriver Installation
@@ -29,6 +34,9 @@ jobs:
       - name: Grant execute permission for Gradlew
         run: chmod +x gradlew
 
+      - name: Start Chrome in Background
+        run: google-chrome --headless --no-sandbox --disable-dev-shm-usage --remote-debugging-port=9222 &
+
       - name: Cache Gradle dependencies
         uses: actions/cache@v3
         with:
@@ -38,16 +46,16 @@ jobs:
             ${{ runner.os }}-gradle-
 
       - name: Run Gradle build
-        run: ./gradlew build
+        run: ./gradlew build -Dwebdriver.chrome.driver=/usr/bin/chromedriver
 
       - name: Run API tests
-        run: ./gradlew runApiTests
+        run: ./gradlew runApiTests -Dwebdriver.chrome.driver=/usr/bin/chromedriver
 
       - name: Run Web tests 1
-        run: ./gradlew runWebTests
+        run: ./gradlew runWebTests -Dwebdriver.chrome.driver=/usr/bin/chromedriver
 
       - name: Run Web tests 2
-        run: ./gradlew runWebTests2
+        run: ./gradlew runWebTests2 -Dwebdriver.chrome.driver=/usr/bin/chromedriver
 
       - name: Upload Tests Reports
         uses: actions/upload-artifact@v4
