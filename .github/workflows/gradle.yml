@@ -17,50 +17,43 @@ jobs:
         with:
           java-version: '17'
           distribution: 'temurin'
-          cache: gradle
 
       - name: Install Chrome and Chromedriver
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y google-chrome-stable
-          CHROME_VERSION=$(google-chrome --version | awk '{print $3}')
-          echo "Chrome version: $CHROME_VERSION"
-          sudo apt-get install -y chromedriver
+        uses: nanasess/setup-chromedriver@v2
 
       - name: Verify Chrome and Chromedriver Installation
         run: |
           google-chrome --version
           chromedriver --version
 
-      - name: Grant execute permission for Gradle Wrapper
+      - name: Grant execute permission for Gradlew
         run: chmod +x gradlew
 
       - name: Cache Gradle dependencies
         uses: actions/cache@v3
         with:
-          path: ~/.gradle/caches
-          key: gradle-${{ runner.os }}-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          # Menyimpan cache direktori Gradle yang umum dipakai
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
           restore-keys: |
-            gradle-${{ runner.os }}-
+            ${{ runner.os }}-gradle-
 
-      - name: Run Gradle Build
-        run: ./gradlew clean build
+      - name: Run Gradle build
+        run: ./gradlew build
 
-      - name: Run API Tests
+      - name: Run API tests
         run: ./gradlew runApiTests
-        continue-on-error: false
 
-      - name: Run Web Tests 1
+      - name: Run Web tests 1
         run: ./gradlew runWebTests
-        continue-on-error: false
 
-      - name: Run Web Tests 2
+      - name: Run Web tests 2
         run: ./gradlew runWebTests2
-        continue-on-error: false
 
-      - name: Upload Test Reports
-        if: always()
+      - name: Upload Tests Reports
         uses: actions/upload-artifact@v4
         with:
-          name: test-reports
+          name: tests-reports
           path: build/reports/
