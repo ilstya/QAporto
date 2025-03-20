@@ -18,10 +18,13 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      - name: Install Chrome Stable
-        uses: browser-actions/setup-chrome@v1
-        with:
-          chrome-version: 'stable'
+      - name: Install Chrome and Chromedriver
+        uses: nanasess/setup-chromedriver@v2
+
+      - name: Verify Chrome and Chromedriver Installation
+        run: |
+          google-chrome --version
+          chromedriver --version
 
       - name: Grant execute permission for Gradlew
         run: chmod +x gradlew
@@ -33,6 +36,7 @@ jobs:
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
           restore-keys: |
             ${{ runner.os }}-gradle-
+
       - name: Run Gradle build
         run: ./gradlew build
 
