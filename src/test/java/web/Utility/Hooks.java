@@ -7,6 +7,8 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.time.Duration;
 
 public class Hooks {
@@ -15,15 +17,14 @@ public class Hooks {
     @Before
     public void setup() {
         if (driver == null) {
-            WebDriverManager.chromedriver().setup();
             ChromeOptions options = new ChromeOptions();
-            options.addArguments("--headless"); // Mode headless wajib di GitHub Actions
-            options.addArguments("--no-sandbox");
+            options.addArguments("--user-data-dir=/tmp/chrome-profile");
             options.addArguments("--disable-dev-shm-usage");
             options.addArguments("--remote-allow-origins=*");
-            driver = new ChromeDriver();
-            driver.manage().window().maximize();
-            driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
+            options.addArguments("--headless=new");
+            options.addArguments("--no-sandbox");
+
+            driver = new ChromeDriver(options);
         }
     }
 

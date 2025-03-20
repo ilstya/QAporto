@@ -12,7 +12,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Set up JDK 17
+      - name: Set up JDK
         uses: actions/setup-java@v3
         with:
           java-version: '17'
@@ -26,16 +26,16 @@ jobs:
           google-chrome --version
           chromedriver --version
 
+      - name: Kill any running Chrome instances
+        run: pkill -f chrome || true
+
       - name: Grant execute permission for Gradlew
         run: chmod +x gradlew
 
       - name: Cache Gradle dependencies
         uses: actions/cache@v3
         with:
-          # Menyimpan cache direktori Gradle yang umum dipakai
-          path: |
-            ~/.gradle/caches
-            ~/.gradle/wrapper
+          path: ~/.gradle/caches
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
           restore-keys: |
             ${{ runner.os }}-gradle-
@@ -46,14 +46,11 @@ jobs:
       - name: Run API tests
         run: ./gradlew runApiTests
 
-      - name: Run Web tests 1
+      - name: Run Web tests
         run: ./gradlew runWebTests
 
-      - name: Run Web tests 2
-        run: ./gradlew runWebTests2
-
-      - name: Upload Tests Reports
+      - name: Upload Cucumber Reports
         uses: actions/upload-artifact@v4
         with:
-          name: tests-reports
-          path: build/reports/
+          name: cucumber-reports
+          path: build/reports/cucumber/
