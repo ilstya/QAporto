@@ -4,6 +4,7 @@ import io.cucumber.java.After;
 import io.cucumber.java.Before;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 
 import java.time.Duration;
 
@@ -13,8 +14,14 @@ public class Hooks {
     @Before
     public void setup() {
         if (driver == null) {
-            System.setProperty("webdriver.chrome.driver", "src/test/resources/drivers/chromedriver.exe");
-            driver = new ChromeDriver();
+            ChromeOptions options = new ChromeOptions();
+            options.addArguments("--headless"); // Jalankan tanpa UI
+            options.addArguments("--no-sandbox"); // Hindari permission issue di Linux
+            options.addArguments("--disable-dev-shm-usage"); // Gunakan /tmp untuk shared memory
+            options.addArguments("--disable-gpu"); // Matikan akselerasi GPU
+            options.addArguments("--remote-allow-origins=*"); // Pastikan akses remote
+
+            driver = new ChromeDriver(options);
             driver.manage().window().maximize();
             driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
         }
